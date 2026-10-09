@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"testing"
@@ -30,6 +31,18 @@ const (
 )
 
 var ErrUnsupportedEvent = kittelemetry.ErrUnsupportedTelemetryEvent
+
+func init() {
+	// Kit defaults to enabled. Set the application default before constructing
+	// reporters so disabled reporters retain kit's event validation without
+	// starting a PostHog client. Explicit environment settings remain intact.
+	if strings.TrimSpace(os.Getenv(EnabledEnv)) == "" {
+		if err := os.Setenv(EnabledEnv, "0"); err != nil {
+			kittelemetry.DisablePostHogTelemetry()
+			slog.Warn("telemetry disabled: could not set default", "err", err)
+		}
+	}
+}
 
 type Reporter struct {
 	client          *kittelemetry.PostHogReporter
