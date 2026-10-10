@@ -24,7 +24,6 @@ func TestBuildSessionFilterSQLHooksKeepRowStoreDialectsUnchanged(t *testing.T) {
 	}{
 		{"sqlite", SQLiteQueryDialect(), sqliteWant},
 		{"postgres", PostgresQueryDialect(), postgresWant},
-		{"duckdb", DuckDBQueryDialect(), sqliteWant},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
